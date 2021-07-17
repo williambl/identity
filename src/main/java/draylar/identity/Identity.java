@@ -10,9 +10,14 @@ import draylar.identity.registry.EventHandlers;
 import draylar.omegaconfig.OmegaConfig;
 import io.github.ladysnake.pal.AbilitySource;
 import io.github.ladysnake.pal.Pal;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementProgress;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.GuardianEntity;
 import net.minecraft.entity.mob.WaterCreatureEntity;
@@ -25,6 +30,13 @@ public class Identity implements ModInitializer {
 
     public static final IdentityConfig CONFIG = OmegaConfig.register(IdentityConfig.class);
     public static final AbilitySource ABILITY_SOURCE = Pal.getAbilitySource(id("equipped_identity"));
+
+    public static final Object2FloatMap<Identifier> MAX_HEALTH_OVERRIDES = new Object2FloatOpenHashMap<>();
+    static {
+        MAX_HEALTH_OVERRIDES.put(new Identifier("adventurez:red_fungus"), 6f);
+        MAX_HEALTH_OVERRIDES.put(new Identifier("minecraft:snow_golem"), 6f);
+        MAX_HEALTH_OVERRIDES.put(new Identifier("guardiansgalore:boar"), 16f);
+    }
 
     @Override
     public void onInitialize() {

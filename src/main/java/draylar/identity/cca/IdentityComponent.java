@@ -76,7 +76,7 @@ public class IdentityComponent implements AutoSyncedComponent, ServerTickingComp
         // Identity is valid and scaling health is on; set entity's max health and current health to reflect identity.
         if (identity != null && Identity.CONFIG.scalingHealth) {
             player.setHealth(Math.min(player.getHealth(), identity.getMaxHealth()));
-            player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(Math.min(Identity.CONFIG.maxHealth, identity.getMaxHealth()));
+            player.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(Math.min(Identity.CONFIG.maxHealth, Identity.MAX_HEALTH_OVERRIDES.getOrDefault(Registry.ENTITY_TYPE.getId(identity.getType()), identity.getMaxHealth())));
         }
 
         // If the identity is null (going back to player), set the player's base health value to 20 (default) to clear old changes.

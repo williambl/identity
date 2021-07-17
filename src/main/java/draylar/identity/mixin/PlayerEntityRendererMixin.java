@@ -70,6 +70,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
             identity.prevHeadYaw = player.prevHeadYaw;
             identity.age = player.age;
             identity.preferredHand = player.preferredHand;
+            identity.setVelocity(player.getVelocity());
 
             ((EntityAccessor) identity).setVehicle(player.getVehicle());
             ((EntityAccessor) identity).setTouchingWater(player.isTouchingWater());
