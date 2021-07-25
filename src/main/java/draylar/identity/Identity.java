@@ -37,6 +37,7 @@ public class Identity implements ModInitializer {
         MAX_HEALTH_OVERRIDES.put(new Identifier("minecraft:snow_golem"), 6f);
         MAX_HEALTH_OVERRIDES.put(new Identifier("guardiansgalore:boar"), 16f);
         MAX_HEALTH_OVERRIDES.put(new Identifier("biomemakeover:toad"), 8f);
+        MAX_HEALTH_OVERRIDES.put(new Identifier("adventurez:brown_fungus"), 10f);
     }
 
     @Override
