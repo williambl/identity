@@ -10,6 +10,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -22,6 +26,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,12 +35,16 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Iterator;
+
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
 
     @Shadow protected abstract int getNextAirOnLand(int air);
 
     @Shadow public abstract boolean hasStatusEffect(StatusEffect effect);
+
+    @Shadow @Nullable public abstract EntityAttributeInstance getAttributeInstance(EntityAttribute attribute);
 
     protected LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -181,7 +190,25 @@ public abstract class LivingEntityMixin extends Entity {
                 LivingEntity identity = Components.CURRENT_IDENTITY.get(this).getIdentity();
 
                 if (identity != null) {
-                    cir.setReturnValue(identity.getMaxHealth());
+                    EntityAttributeInstance attr = getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH);
+
+                    double d = identity.getMaxHealth();
+
+                    for(EntityAttributeModifier entityAttributeModifier : attr.getModifiers(EntityAttributeModifier.Operation.ADDITION)) {
+                        d += entityAttributeModifier.getValue();
+                    }
+
+                    double e = d;
+
+                    for(EntityAttributeModifier entityAttributeModifier : attr.getModifiers(EntityAttributeModifier.Operation.MULTIPLY_BASE)) {
+                        e += d * entityAttributeModifier.getValue();
+                    }
+
+                    for(EntityAttributeModifier entityAttributeModifier : attr.getModifiers(EntityAttributeModifier.Operation.MULTIPLY_TOTAL)) {
+                        e *= 1.0D + entityAttributeModifier.getValue();
+                    }
+
+                    cir.setReturnValue((float) EntityAttributes.GENERIC_MAX_HEALTH.clamp(e));
                 }
             }
         }

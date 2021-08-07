@@ -9,6 +9,10 @@
     "minecraft:bee",
     "minecraft:ender_dragon",
     "minecraft:wither",
-    "minecraft:vex"
+    "minecraft:vex",
+    {
+      "id": "guardiansgalore:dragon",
+      "required": false
+    }
   ]
 }
